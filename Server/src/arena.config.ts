@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes";
 import { MMORoom } from "./rooms/MMORoom";
 import { ChatRoom } from "./rooms/ChatRoom";
 import { TicTacToe } from "./rooms/tictactoe";
+import cors from "cors";
 
 export default Arena({
     getId: () => "8adedd4622e4f7d0f2e47172a62d129d",
@@ -33,6 +34,7 @@ export default Arena({
         /**
          * Bind your custom express routes here:
          */
+         app.use(cors());
         // Body parser - reads data from request body into json object
         app.use(express.json());
         app.use(express.urlencoded({ extended: true, limit: "10kb" }));

@@ -1,5 +1,6 @@
 import { Room, Delayed, Client } from 'colyseus';
 import { type, Schema, MapSchema, ArraySchema } from '@colyseus/schema';
+import logger from '../helpers/logger';
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 3;
@@ -23,6 +24,10 @@ export class TicTacToe extends Room<State> {
   }
 
   onJoin (client: Client) {
+    
+    logger.silly(`*** On Join Tic Tac Toe - ${client.sessionId} ***`);
+    logger.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} *********************** `);
+
     this.state.players.set(client.sessionId, true);
 
     if (this.state.players.size === 2) {

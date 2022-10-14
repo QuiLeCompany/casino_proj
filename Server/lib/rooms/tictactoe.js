@@ -8,10 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TicTacToe = void 0;
 const colyseus_1 = require("colyseus");
 const schema_1 = require("@colyseus/schema");
+const logger_1 = __importDefault(require("../helpers/logger"));
 const TURN_TIMEOUT = 10;
 const BOARD_WIDTH = 3;
 class State extends schema_1.Schema {
@@ -52,6 +56,8 @@ class TicTacToe extends colyseus_1.Room {
         console.log("Room Created!");
     }
     onJoin(client) {
+        logger_1.default.silly(`*** On Join Tic Tac Toe - ${client.sessionId} ***`);
+        logger_1.default.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} *********************** `);
         this.state.players.set(client.sessionId, true);
         if (this.state.players.size === 2) {
             this.state.currentTurn = client.sessionId;

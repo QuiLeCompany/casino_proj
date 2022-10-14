@@ -25,6 +25,7 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const MMORoom_1 = require("./rooms/MMORoom");
 const ChatRoom_1 = require("./rooms/ChatRoom");
 const tictactoe_1 = require("./rooms/tictactoe");
+const cors_1 = __importDefault(require("cors"));
 exports.default = arena_1.default({
     getId: () => "8adedd4622e4f7d0f2e47172a62d129d",
     initializeGameServer: (gameServer) => {
@@ -39,6 +40,7 @@ exports.default = arena_1.default({
         /**
          * Bind your custom express routes here:
          */
+        app.use(cors_1.default());
         // Body parser - reads data from request body into json object
         app.use(express_1.default.json());
         app.use(express_1.default.urlencoded({ extended: true, limit: "10kb" }));
