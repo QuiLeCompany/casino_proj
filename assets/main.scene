@@ -3960,8 +3960,8 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "serverURL": "localhost",
-    "port": "2567",
+    "serverURL": "mzhgtr.colyseus.dev",
+    "port": "80",
     "menuNode": {
       "__id__": 11
     },

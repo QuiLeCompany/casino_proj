@@ -16,7 +16,7 @@ import { ChatRoom } from "./rooms/ChatRoom";
 import { TicTacToe } from "./rooms/tictactoe";
 
 export default Arena({
-    getId: () => "Your Colyseus App",
+    getId: () => "8adedd4622e4f7d0f2e47172a62d129d",
 
     initializeGameServer: (gameServer) => {
 
