@@ -27,8 +27,6 @@ export class LoginScene extends Component {
     }
 
     onLoad() {
-        i18n.init('en');
-
         this.showAdsBanner();
 
         if (mahjongConfig.instance.isMahjongGame && !mahjongConfig.instance.isLoaded) {
