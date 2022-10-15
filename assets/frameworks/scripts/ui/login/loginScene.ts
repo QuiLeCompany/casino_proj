@@ -142,7 +142,7 @@ export class LoginScene extends Component {
         let isIpad = mahjongConfig.instance.IS_IPAD;
         let nameMahjongScene = `${MAHJONG}${isIpad ? IPAD_NAME : ''}`;
         let gameScene = mahjongConfig.instance.isMahjongGame? `fight${nameMahjongScene}` : `fight`;
-        let targetScene = mahjongConfig.instance.isMahjongGame ? gameScene : playerData.instance.isNewBee ? gameScene : 'pve';
+        let targetScene = mahjongConfig.instance.isMahjongGame ? gameScene : playerData.instance.isNewBee ? gameScene : 'lobby';
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
