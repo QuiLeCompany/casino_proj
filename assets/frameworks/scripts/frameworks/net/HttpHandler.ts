@@ -11,6 +11,8 @@ export class HttpHandler {
 
     public LoginServer()
     {
-        
+        const userName = `quilevan`;
+        const password = `12345678`;
+        console.log(`********** Login by user/ pass`);
     }
 }

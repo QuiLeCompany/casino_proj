@@ -13,6 +13,8 @@ import { mahjongConfig, MAHJONG, IPAD_NAME } from '../../mahjong/mahjongConfig';
 import { MahjongSingleton } from '../../mahjong/mahjongSingleton';
 import { nativeEvent } from '../../frameworks/nativeEvent';
 import { util } from '../../frameworks/util';
+import cv from '../../frameworks/cv';
+import { Delay } from '../../frameworks/helpers/Delay';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')
@@ -156,6 +158,22 @@ export class LoginScene extends Component {
     }
 
     onBtnVisitorLoginClick() {
+        this.ProcessChangeScene();
+    }
+
+    onBtnLoginByUserName() {
+        cv.httpHandler?.LoginServer();
+        this.ProcessLogin();
+    }
+
+    async ProcessLogin() {
+        console.log(`******** START PROCESS LOGIN *****`);
+        await Delay.delay(3000);
+        console.log(`******** DONE PROCESS LOGIN *****`);
+        this.ProcessChangeScene();
+    }
+
+    protected ProcessChangeScene() {
         if (!this.isLoadCsvFinishd) return;
         this.showLoadingUI();
     }
