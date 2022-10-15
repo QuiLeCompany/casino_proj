@@ -333,7 +333,7 @@ const constants = {
     //次按钮在主界面显示后3秒再显示
     NORMAL_SHOW_TIME: 0.2,
     GAME_SETTING: {
-        IS_ENABLE_DAILY_REWARD : false
+        IS_ENABLE_DAILY_REWARD : true
     },
     IS_SHOW_PROFILE_STATUS: false,
 };
