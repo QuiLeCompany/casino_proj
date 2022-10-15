@@ -11,7 +11,7 @@ export class mahjongConfig {
     public IS_DEBUG_MODE: boolean = !true;
 
     private static _instance: mahjongConfig;
-    public isMahjongGame: boolean = true;
+    public isMahjongGame: boolean = !true;
     public IS_IPAD = false;
     
     static get instance () {
