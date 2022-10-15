@@ -20,7 +20,7 @@ export class HTTP {
 		};
 
 		const fullUrl = `${NetworkConfig.WebRequestEndPoint}/${endPoint}`;
-
+        console.log(`******[ServerRequest url] ${fullUrl}`);
 		xhr.open(method, fullUrl);
 		xhr.responseType = 'json';
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

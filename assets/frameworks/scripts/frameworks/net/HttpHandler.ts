@@ -1,3 +1,5 @@
+import cv from "../cv";
+import { RequestResponse } from "../models/RequestResponse";
 
 export class HttpHandler {
     private static _instance: HttpHandler;
@@ -9,10 +11,15 @@ export class HttpHandler {
         return HttpHandler._instance;
     }
 
-    public LoginServer()
-    {
-        const userName = `quilevan`;
-        const password = `12345678`;
-        console.log(`********** Login by user/ pass`);
-    }
+    /**
+	 * Send the provided user info to the server to attempt user login.
+	 * @param email Email of the user account
+	 * @param password Password of the user account
+	 * @param onComplete Callback to execute when the request has completed
+	 */
+	public userLogIn(email: string, password: string, onComplete: (res: RequestResponse) => void) {
+		let requestData = `email=${email}&password=${password}`;
+
+		cv.http?.serverRequest('POST', 'users/login', requestData, onComplete);
+	}
 }

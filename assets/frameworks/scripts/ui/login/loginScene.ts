@@ -15,6 +15,7 @@ import { nativeEvent } from '../../frameworks/nativeEvent';
 import { util } from '../../frameworks/util';
 import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
+import { RequestResponse } from '../../frameworks/models/RequestResponse';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')
@@ -162,8 +163,22 @@ export class LoginScene extends Component {
     }
 
     onBtnLoginByUserName() {
-        cv.httpHandler?.LoginServer();
-        this.ProcessLogin();
+        const userName = `levanqui88@gmail.com`;
+        const password = `12345678`;
+        console.log(`********** Login by user/ pass`);
+        const self = this;
+        cv.httpHandler?.userLogIn(userName, password, (res: RequestResponse) => {
+            if (res?.error == true) {
+                console.log(`Login have some error .........`);
+            }
+            else {
+                //do something with data from server
+                const data = res.output;
+                console.log(`Login data : ${JSON.stringify(data)}`);
+                self.ProcessLogin();
+            }
+        });
+        
     }
 
     async ProcessLogin() {
