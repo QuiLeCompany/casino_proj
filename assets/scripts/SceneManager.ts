@@ -40,7 +40,7 @@ export class SceneManager extends Component {
     private countdownInterval : any;
 
     onLoad(){
-        let endpoint : string = `ws://${this.serverURL}:${this.port}`;
+        let endpoint : string = `ws://${this.serverURL}:${this.port}`;//xgmd-a.colyseus.de:80, localhost:2567
         this.client = new Colyseus.Client(endpoint);
         this.resetGame();
     }

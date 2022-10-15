@@ -3960,8 +3960,8 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "serverURL": "xgmd-a.colyseus.de",
-    "port": "80",
+    "serverURL": "localhost",
+    "port": "2567",
     "menuNode": {
       "__id__": 11
     },
