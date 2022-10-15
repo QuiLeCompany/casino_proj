@@ -2,15 +2,21 @@
   "__version__": "1.0.2",
   "general": {
     "designResolution": {
-      "fitHeight": true,
-      "width": 720,
-      "height": 1280,
-      "fitWidth": false
+      "fitHeight": false,
+      "width": 768,
+      "height": 1363,
+      "fitWidth": true
     }
   },
   "fbx": {
     "legacyFbxImporter": {
       "visible": true
     }
-  }
+  },
+  "layer": [
+    {
+      "name": "default",
+      "value": 1
+    }
+  ]
 }
