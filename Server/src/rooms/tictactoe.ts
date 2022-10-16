@@ -1,6 +1,8 @@
-import { Room, Delayed, Client } from 'colyseus';
+import { Room, Delayed, ServerError, Client, updateLobby } from 'colyseus';
 import { type, Schema, MapSchema, ArraySchema } from '@colyseus/schema';
 import logger from '../helpers/logger';
+import { DI } from '../config/database.config';
+import { User } from "../entities/UserEntity";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 3;
@@ -21,11 +23,50 @@ export class TicTacToe extends Room<State> {
     this.setState(new State());
     this.onMessage("action", (client, message) => this.playerAction(client, message));
     console.log("Room Created!");
+
+    this.clock.setTimeout(() => {
+
+      this.setMetadata({
+        customData: "Hello world!"
+      }).then(() => updateLobby(this));
+
+    }, 5000);
   }
 
-  onJoin (client: Client) {
+  /** onAuth is called before onJoin */
+  async onAuth(client: Client, options: any, request: any) {
+    logger.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} option: ${JSON.stringify(options)}*********************** `);
+    const tokenId = !!(options?.tokenId) ? options.tokenId : "";
+    const userRepo = DI.em.fork().getRepository(User);
+
+    // Check for a user with a pending sessionId that matches this client's sessionId
+    let user: User = await userRepo.findOne({ pendingTokenId: tokenId });
+
+    if (user) {
+      // A user with the pendingSessionId does exist
+
+      // Update user; clear their pending session Id and update their active session Id
+      user.activeSessionId = client.sessionId;
+      user.activeTokenId = tokenId;
+      user.pendingTokenId = "";
+
+      // Save the user changes to the database
+      await userRepo.flush();
+
+      // Returning the user object equates to returning a "truthy" value that allows the onJoin function to continue
+      return user;
+    }
+    else {
+      // No user object was found with the pendingSessionId like we expected
+      logger.error(`On Auth - No user found for session Id - ${client.sessionId}`);
+
+      throw new ServerError(400, "Bad session!");
+    }
+  }
+
+  onJoin (client: Client, options: any) {
     
-    logger.silly(`*** On Join Tic Tac Toe - ${client.sessionId} ***`);
+    logger.silly(`*** On Join Tic Tac Toe - ${client.sessionId} option : ${JSON.stringify(options)}***`);
     logger.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} *********************** `);
 
     this.state.players.set(client.sessionId, true);
@@ -145,7 +186,18 @@ export class TicTacToe extends Room<State> {
     return won;
   }
 
-  onLeave (client: Client) {
+  async onLeave (client: Client) {
+    const userRepo = DI.em.fork().getRepository(User);
+    // Find the user object in the database by their activeSessionId
+    let user: User = await userRepo.findOne({ activeSessionId: client.sessionId });
+    if (user) {
+      user.activeSessionId = "";
+      user.activeTokenId = "";
+      
+      // Save the user's changes to the database
+      await userRepo.flush();
+    }
+
     this.state.players.delete(client.sessionId);
 
     if (this.randomMoveTimeout) {

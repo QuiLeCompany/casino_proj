@@ -5,6 +5,7 @@ import { DI } from "../config/database.config";
 import { User } from "../entities/UserEntity";
 import logger from "../helpers/logger";
 import * as matchmakerHelper from "../helpers/matchmakerHelper";
+import { Utils } from "../helpers/utils";
 import { Position } from "../rooms/schema/Position";
 import { Rotation } from "../rooms/schema/Rotation";
 
@@ -30,25 +31,25 @@ export function prepEmail(req: any, res: any, next: any) {
 /**
  * Update the user for a new room session; updates user's pending session Id and resets their position and rotation
  * @param user The user to update for the new session
- * @param sessionId The new session Id
+ * @param tokenId The new session Id
  */
-function updateUserForNewSession(user: User, sessionId: string) {
+function updateUserForNewSession(user: User, tokenId: string) {
 
-    user.pendingSessionId = sessionId;
-    user.pendingSessionTimestamp = Date.now();
+    user.pendingTokenId = tokenId;
+    user.pendingTokenTimestamp = Date.now();
     user.updatedAt = new Date();
 
-    user.position = new Position().assign({
-        x: 0,
-        y: 1,
-        z: 0
-    });
+    // user.position = new Position().assign({
+    //     x: 0,
+    //     y: 1,
+    //     z: 0
+    // });
 
-    user.rotation = new Rotation().assign({
-        x: 0,
-        y: 0,
-        z: 0
-    });
+    // user.rotation = new Rotation().assign({
+    //     x: 0,
+    //     y: 0,
+    //     z: 0
+    // });
 
 }
 
@@ -73,7 +74,7 @@ export async function signUp(req: any, res: any) {
 
         // Check if an account with the email already exists
         let user = await userRepo.findOne({ email: req.body.email });
-        let seatReservation;
+        // let seatReservation;
 
         if (user == null) {
 
@@ -84,10 +85,12 @@ export async function signUp(req: any, res: any) {
                 password: req.body.password
             });
 
-            // Match make the user into a room
-            seatReservation = await matchmakerHelper.matchMakeToRoom("lobby_room", user.progress);
+            const passTokenHash = new Date()+'';
+            const tokenId = Utils.generateHash(passTokenHash);
+            // // Match make the user into a room
+            // seatReservation = await matchmakerHelper.matchMakeToRoom("lobby_room");
 
-            updateUserForNewSession(user, seatReservation.sessionId);
+            updateUserForNewSession(user, tokenId);
 
             // Save the new user to the database
             await userRepo.persistAndFlush(user);
@@ -104,7 +107,6 @@ export async function signUp(req: any, res: any) {
         res.status(200).json({
             error: false,
             output: {
-                seatReservation,
                 user: newUserObj
             }
         });
@@ -149,9 +151,9 @@ export async function logIn(req: any, res: any) {
         }
 
         // Check if the user is already logged in
-        if (user.activeSessionId) {
+        if (user.activeTokenId) {
 
-            logger.error(`User is already logged in- \"${user.activeSessionId}\"`);
+            logger.error(`User is already logged in- \"${user.activeTokenId}\"`);
 
             throw "User is already logged in";
             return;
@@ -159,9 +161,9 @@ export async function logIn(req: any, res: any) {
 
         // Wait a minimum of 30 seconds when a pending session Id currently exists
         // before letting the user sign in again
-        if (user.pendingSessionId && user.pendingSessionTimestamp && (Date.now() - user.pendingSessionTimestamp) <= 30000) {
+        if (user.pendingTokenId && user.pendingTokenTimestamp && (Date.now() - user.pendingTokenTimestamp) <= 30000) {
 
-            let timeLeft = (Date.now() - user.pendingSessionTimestamp) / 1000;
+            let timeLeft = (Date.now() - user.pendingTokenTimestamp) / 1000;
             logger.error(`Can't log in right now, try again in ${timeLeft} seconds!`);
 
             throw `Can't log in right now, try again in ${timeLeft} seconds!`;
@@ -169,9 +171,10 @@ export async function logIn(req: any, res: any) {
         }
 
         // Match make the user into a room filtering based on the user's progress
-        const seatReservation: matchMaker.SeatReservation = await matchmakerHelper.matchMakeToRoom("lobby_room", user.progress);
-
-        updateUserForNewSession(user, seatReservation.sessionId);
+        // const seatReservation: matchMaker.SeatReservation = await matchmakerHelper.matchMakeToRoom("tictactoe", user.progress);
+        const passTokenHash = new Date()+'';
+        const tokenId = Utils.generateHash(passTokenHash);
+        updateUserForNewSession(user, tokenId);
 
         // Save the user updates to the database
         await userRepo.flush();
@@ -186,7 +189,6 @@ export async function logIn(req: any, res: any) {
         res.status(200).json({
             error: false,
             output: {
-                seatReservation,
                 user: userCopy
             }
         });

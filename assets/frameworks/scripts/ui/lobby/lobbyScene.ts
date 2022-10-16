@@ -25,10 +25,13 @@ export class lobbyScene extends Component {
         this.lobby.onMessage("rooms", (rooms) => {
             console.log(`*********** get all rooms after join ${JSON.stringify(rooms)}`);
             self.allRooms = rooms;
+            self.allRooms.forEach(element => {
+                console.log(`room : ${JSON.stringify(element)}`);
+            });
         });
         
         this.lobby.onMessage("+", ([roomId, room]) => {
-            console.log(`*********** + room id = ${roomId} info room: ${room}`);
+            console.log(`*********** + room id = ${roomId} info room: ${JSON.stringify(room)}`);
             const roomIndex = self.allRooms.findIndex((room) => room.roomId === roomId);
             if (roomIndex !== -1) {
                 self.allRooms[roomIndex] = room;

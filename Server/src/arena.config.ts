@@ -29,8 +29,8 @@ export default Arena({
         gameServer.define("lobby", LobbyRoom);
 
         gameServer.define('tictactoe', TicTacToe).enableRealtimeListing();
-        gameServer.define('chat_room', ChatRoom).filterBy(["roomID"]);
-        gameServer.define('lobby_room', MMORoom).filterBy(["progress"]); // Filter room by "progress" (which grid we're wanting to join EX: -1x2)
+        // gameServer.define('chat_room', ChatRoom).filterBy(["roomID"]);
+        // gameServer.define('lobby_room', MMORoom).filterBy(["progress"]); // Filter room by "progress" (which grid we're wanting to join EX: -1x2)
 
     },
 

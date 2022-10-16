@@ -54,14 +54,14 @@ export class MMORoom extends Room<RoomState> {
     const userRepo = DI.em.fork().getRepository(User);
 
     // Check for a user with a pending sessionId that matches this client's sessionId
-    let user: User = await userRepo.findOne({ pendingSessionId: client.sessionId });
+    let user: User = await userRepo.findOne({ pendingTokenId: client.sessionId });
 
     if (user) {
       // A user with the pendingSessionId does exist
 
       // Update user; clear their pending session Id and update their active session Id
-      user.activeSessionId = client.sessionId;
-      user.pendingSessionId = "";
+      user.activeTokenId = client.sessionId;
+      user.pendingTokenId = "";
 
       // Save the user changes to the database
       await userRepo.flush();
@@ -131,13 +131,13 @@ export class MMORoom extends Room<RoomState> {
     const userRepo = DI.em.fork().getRepository(User);
 
     // Find the user object in the database by their activeSessionId
-    let user: User = await userRepo.findOne({ activeSessionId: client.sessionId });
+    let user: User = await userRepo.findOne({ activeTokenId: client.sessionId });
 
     if (user) {
       // Clear the user's active session
-      user.activeSessionId = "";
-      user.position = this.state.getUserPosition(client.sessionId);
-      user.rotation = this.state.getUserRotation(client.sessionId);
+      user.activeTokenId = "";
+      // user.position = this.state.getUserPosition(client.sessionId);
+      // user.rotation = this.state.getUserRotation(client.sessionId);
 
       // Save the user's changes to the database
       await userRepo.flush();
@@ -225,7 +225,7 @@ export class MMORoom extends Room<RoomState> {
     }
 
     // Get the user object by the active session Id
-    let user = await userRepo.findOne({ activeSessionId: client.sessionId });
+    let user = await userRepo.findOne({ activeTokenId: client.sessionId });
 
     if (user == null) {
 
@@ -234,7 +234,8 @@ export class MMORoom extends Room<RoomState> {
     }
 
     // Calculate the new grid
-    let progress = user ? user.progress : "0,0" || "0,0";
+    // let progress = user ? user.progress : "0,0" || "0,0";
+    let progress = "0,0";
 
     const currentGrid: string[] = progress.split(",");
     const currentX = Number(currentGrid[0]);
@@ -260,11 +261,11 @@ export class MMORoom extends Room<RoomState> {
     }
 
     // Update the user to reflect the grid change
-    user.progress = newGridString;
-    user.prevGrid = progress;
-    user.pendingSessionId = seatReservation.sessionId;
-    user.position = new Position().assign(position);
-    user.rotation = this.state.getUserRotation(client.sessionId);
+    // user.progress = newGridString;
+    // user.prevGrid = progress;
+    user.pendingTokenId = seatReservation.sessionId;
+    // user.position = new Position().assign(position);
+    // user.rotation = this.state.getUserRotation(client.sessionId);
     user.updatedAt = new Date();
 
     // Save the user's changes to the database
@@ -338,7 +339,7 @@ export class MMORoom extends Room<RoomState> {
 
           this.broadcast("objectUsed", { interactedObjectID: interactableObject.id, interactingStateID: interactingState.id });
 
-          let userObj: User = await userRepo.findOne({ activeSessionId: client.sessionId });
+          let userObj: User = await userRepo.findOne({ activeTokenId: client.sessionId });
 
           if (userObj) {
             userObj.coins = interactingState.coins;
@@ -401,7 +402,7 @@ export class MMORoom extends Room<RoomState> {
 
   async saveAvatarUpdate(client: Client) {
     const userRepo = DI.em.fork().getRepository(User);
-    let user: User = await userRepo.findOne({ activeSessionId: client.sessionId });
+    let user: User = await userRepo.findOne({ activeTokenId: client.sessionId });
     if (user) {
       let avatarState = this.state.getUserAvatarState(client.sessionId);
       user.avatar = avatarState;

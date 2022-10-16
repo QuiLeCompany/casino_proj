@@ -2,6 +2,9 @@
 import { _decorator, Component, Node, systemEvent, SystemEvent, Vec2, Label, Color } from 'cc';
 import { Board } from './board';
 import Colyseus, { Room } from 'db://colyseus-sdk/colyseus.js';
+import { RequestResponse } from '../frameworks/scripts/frameworks/models/RequestResponse';
+import cv from '../frameworks/scripts/frameworks/cv';
+import { RoomState } from '../../Server/src/rooms/schema/RoomState';
 
 const { ccclass, property } = _decorator;
 @ccclass('SceneManager')
@@ -70,17 +73,65 @@ export class SceneManager extends Component {
         switch(this.gameState){
             case "MENU":
                 {
-                    this.gameState = "LOBBY";
-                    this.handleGameState();
-                    this.connect();
+                    // this.signUp();
+                    this.login();
                     break;
                 }
         }
     }
 
-    async connect () {
-        console.log("Joining game...");
-        this.room = await this.client!.joinOrCreate("tictactoe");
+    signUp() {
+        // signup
+        const email = `user001@gmail.com`;
+        const user = `user001`;
+        const password = `12345678`;
+        const self = this;
+        cv.httpHandler?.userSignUp(user, email, password, (res: RequestResponse) => {
+            if (res?.error == true) {
+                console.log(`Signup Error .........${JSON.stringify(res?.output)}`);
+            }
+            else {
+                //do something with data from server
+                self.gameState = "LOBBY";
+                const data = res.output.user;
+                console.log(`signup data : ${JSON.stringify(data)}`);
+                self.handleGameState();
+                const tokenId = data.pendingTokenId || '';
+                self.connect(tokenId);
+            }
+        });
+    }
+
+    login() {
+        const userName = `user001@gmail.com`;
+        const password = `12345678`;
+        console.log(`********** Login by user/ pass`);
+        const self = this;
+        cv.httpHandler?.userLogIn(userName, password, (res: RequestResponse) => {
+            if (res?.error == true) {
+                console.log(`Login have some error .........`);
+            }
+            else {
+                //do something with data from server
+                self.gameState = "LOBBY";
+                const data = res.output.user;
+                console.log(`Login data : ${JSON.stringify(data)}`);
+                self.handleGameState();
+                const tokenId = data.pendingTokenId || '';
+                self.connect(tokenId);
+            }
+        });
+    }
+
+    async connect (tokenId: string) {
+        console.log("Joining game... session id : " + tokenId);
+        // this.room = await this.client!.consumeSeatReservation({ room, sessionId });
+        this.room = await this.client!.joinOrCreate("tictactoe", {tokenId: tokenId});
+
+        // let chatRoom: Colyseus.Room<ChatRoomState> = await this._client.joinOrCreate<ChatRoomState>('chat_room', {
+		// 	roomID: this.Room.id,
+		// 	messageLifetime: ChatManager.Instance.messageShowTime,
+		// });
     
         let numPlayers = 0;
         this.room.state.players.onAdd = () => {
