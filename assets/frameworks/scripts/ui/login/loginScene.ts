@@ -178,6 +178,7 @@ export class LoginScene extends Component {
                 // build data for user here
                 // login lobby with token.
                 const tokenId = data.pendingTokenId || '';
+                playerData.instance.tokenId = tokenId;
                 cv.networkManager?.connect(tokenId);
                 self.ProcessLogin();
             }

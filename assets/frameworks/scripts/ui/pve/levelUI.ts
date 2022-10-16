@@ -104,7 +104,7 @@ export class LevelUI extends Component {
         // let timeStamp = Date.now();
         try {
             playerData.instance.level = this.levelInfo.ID;
-            let gameScene = mahjongConfig.instance.isMahjongGame? `fight${MAHJONG}` : `fight`;
+            let gameScene = mahjongConfig.instance.isMahjongGame? `fight${MAHJONG}` : `main`;
             SceneManager.instance.loadScene(gameScene, [
                 function (cb: any) {
                     cb();

@@ -41,6 +41,14 @@ export class playerData extends Component {
     private _settings: any = null;
     private _isNewBee: boolean = false;    //默认非新手
     private _dataVersion: string = '';
+    private _tokenId: string = '';
+
+    public get tokenId() {
+        return this._tokenId;
+    }
+    public set tokenId(value: string) {
+        this._tokenId = value;
+    }
 
     public get bag() {
         return this._bag;

@@ -1,6 +1,7 @@
 import { HTTP } from "./net/HTTP";
 import { HttpHandler } from "./net/HttpHandler";
 import { NetworkManager } from "./net/networkManager";
+import { playerData } from "./playerData";
 
 class cv {
     private static _instance: cv;

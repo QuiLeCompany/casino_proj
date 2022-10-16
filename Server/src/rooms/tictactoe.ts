@@ -40,20 +40,9 @@ export class TicTacToe extends Room<State> {
     const userRepo = DI.em.fork().getRepository(User);
 
     // Check for a user with a pending sessionId that matches this client's sessionId
-    let user: User = await userRepo.findOne({ pendingTokenId: tokenId });
+    let user: User = await userRepo.findOne({ activeTokenId: tokenId });
 
     if (user) {
-      // A user with the pendingSessionId does exist
-
-      // Update user; clear their pending session Id and update their active session Id
-      user.activeSessionId = client.sessionId;
-      user.activeTokenId = tokenId;
-      user.pendingTokenId = "";
-
-      // Save the user changes to the database
-      await userRepo.flush();
-
-      // Returning the user object equates to returning a "truthy" value that allows the onJoin function to continue
       return user;
     }
     else {
@@ -187,17 +176,6 @@ export class TicTacToe extends Room<State> {
   }
 
   async onLeave (client: Client) {
-    const userRepo = DI.em.fork().getRepository(User);
-    // Find the user object in the database by their activeSessionId
-    let user: User = await userRepo.findOne({ activeSessionId: client.sessionId });
-    if (user) {
-      user.activeSessionId = "";
-      user.activeTokenId = "";
-      
-      // Save the user's changes to the database
-      await userRepo.flush();
-    }
-
     this.state.players.delete(client.sessionId);
 
     if (this.randomMoveTimeout) {

@@ -5,6 +5,7 @@ import Colyseus, { Room } from 'db://colyseus-sdk/colyseus.js';
 import { RequestResponse } from '../frameworks/scripts/frameworks/models/RequestResponse';
 import cv from '../frameworks/scripts/frameworks/cv';
 import { RoomState } from '../../Server/src/rooms/schema/RoomState';
+import { playerData } from '../frameworks/scripts/frameworks/playerData';
 
 const { ccclass, property } = _decorator;
 @ccclass('SceneManager')
@@ -73,7 +74,9 @@ export class SceneManager extends Component {
         switch(this.gameState){
             case "MENU":
                 {
-                    this.signUp();
+                    const tokenId = playerData.instance.tokenId;
+                    this.connect(tokenId);
+                    // this.signUp();
                     // this.login();
                     break;
                 }
@@ -91,11 +94,8 @@ export class SceneManager extends Component {
                 console.log(`Signup Error .........${JSON.stringify(res?.output)}`);
             }
             else {
-                //do something with data from server
-                self.gameState = "LOBBY";
                 const data = res.output.user;
                 console.log(`signup data : ${JSON.stringify(data)}`);
-                self.handleGameState();
                 const tokenId = data.pendingTokenId || '';
                 self.connect(tokenId);
             }
@@ -113,10 +113,8 @@ export class SceneManager extends Component {
             }
             else {
                 //do something with data from server
-                self.gameState = "LOBBY";
                 const data = res.output.user;
                 console.log(`Login data : ${JSON.stringify(data)}`);
-                self.handleGameState();
                 const tokenId = data.pendingTokenId || '';
                 self.connect(tokenId);
             }
@@ -127,7 +125,10 @@ export class SceneManager extends Component {
         console.log("Joining game... session id : " + tokenId);
         // this.room = await this.client!.consumeSeatReservation({ room, sessionId });
         this.room = await this.client!.joinOrCreate("tictactoe", {tokenId: tokenId});
-
+        
+        this.gameState = "LOBBY";
+        this.handleGameState();
+        
         // let chatRoom: Colyseus.Room<ChatRoomState> = await this._client.joinOrCreate<ChatRoomState>('chat_room', {
 		// 	roomID: this.Room.id,
 		// 	messageLifetime: ChatManager.Instance.messageShowTime,
