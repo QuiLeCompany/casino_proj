@@ -7,15 +7,13 @@ import express from "express";
 const logger = require("./helpers/logger");
 import { connect, DI } from "./config/database.config";
 import userRoutes from "./routes/userRoutes";
-import { LobbyRoom } from "colyseus";
 
 /**
  * Import your Room files
  */
-import { MMORoom } from "./rooms/MMORoom";
-import { ChatRoom } from "./rooms/ChatRoom";
 import { TicTacToe } from "./rooms/tictactoe";
 import cors from "cors";
+import { LobbyRoomOverride } from "./rooms/LobbyRoomOverride";
 
 export default Arena({
     getId: () => "8adedd4622e4f7d0f2e47172a62d129d",
@@ -26,12 +24,8 @@ export default Arena({
          * Define your room handlers:
          */
         // Expose the "lobby" room.
-        gameServer.define("lobby", LobbyRoom);
-
+        gameServer.define("lobby", LobbyRoomOverride);
         gameServer.define('tictactoe', TicTacToe).enableRealtimeListing();
-        // gameServer.define('chat_room', ChatRoom).filterBy(["roomID"]);
-        // gameServer.define('lobby_room', MMORoom).filterBy(["progress"]); // Filter room by "progress" (which grid we're wanting to join EX: -1x2)
-
     },
 
     initializeExpress: (app) => {

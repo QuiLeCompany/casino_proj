@@ -1,6 +1,8 @@
 import { _decorator, Component, Node } from 'cc';
 import Colyseus, { RoomAvailable } from 'db://colyseus-sdk/colyseus.js';
+import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
+import { RequestResponse } from '../../frameworks/models/RequestResponse';
 const { ccclass, property } = _decorator;
 
 @ccclass('lobbyScene')
@@ -13,15 +15,28 @@ export class lobbyScene extends Component {
         console.log(`************ on Load Lobby`);
         this.client = new Colyseus.Client("ws://localhost:2567");
     }
-    
-    async start() {
 
-        await Delay.delay(1000);
-        
-        this.lobby = await this.client!.joinOrCreate("lobby");  
-
+    login() {
+        const userName = `user001@gmail.com`;
+        const password = `12345678`;
+        console.log(`********** Login by user/ pass`);
         const self = this;
+        cv.httpHandler?.userLogIn(userName, password, (res: RequestResponse) => {
+            if (res?.error == true) {
+                console.log(`Login have some error .........`);
+            }
+            else {
+                const data = res.output.user;
+                console.log(`Login data : ${JSON.stringify(data)}`);
+                const tokenId = data.pendingTokenId || '';
+                self.connect(tokenId);
+            }
+        });
+    }
 
+    async connect(tokenId: string) {
+        this.lobby = await this.client!.joinOrCreate("lobby", {tokenId: tokenId});  
+        const self = this;
         this.lobby.onMessage("rooms", (rooms) => {
             console.log(`*********** get all rooms after join ${JSON.stringify(rooms)}`);
             self.allRooms = rooms;
@@ -45,6 +60,16 @@ export class lobbyScene extends Component {
             console.log(`*********** - room id = ${roomId}`);
             self.allRooms = self.allRooms.filter((room) => room.roomId !== roomId);
         });
+
+    }
+    
+    async start() {
+        await Delay.delay(1000);
+        this.login();
+    }
+
+    leaveGame() {
+        this.lobby?.leave();
     }
 }
 

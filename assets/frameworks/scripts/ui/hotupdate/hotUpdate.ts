@@ -48,7 +48,7 @@ export class hotUpdate extends Component {
     }
     enterLoginScreen(cb: any) {
         const _this = this;
-        let targetScene = 'main';
+        let targetScene = 'lobby';
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
