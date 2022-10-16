@@ -35,7 +35,7 @@ export class lobbyScene extends Component {
     
     async start() {
         await Delay.delay(1000);
-        this.login();
+        // this.login();
     }
 
     

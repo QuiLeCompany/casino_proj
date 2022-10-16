@@ -163,7 +163,7 @@ export class LoginScene extends Component {
     }
 
     onBtnLoginByUserName() {
-        const userName = `levanqui88@gmail.com`;
+        const userName = `user001@gmail.com`;
         const password = `12345678`;
         console.log(`********** Login by user/ pass`);
         const self = this;
@@ -173,8 +173,12 @@ export class LoginScene extends Component {
             }
             else {
                 //do something with data from server
-                const data = res.output;
+                const data = res.output.user;
                 console.log(`Login data : ${JSON.stringify(data)}`);
+                // build data for user here
+                // login lobby with token.
+                const tokenId = data.pendingTokenId || '';
+                cv.networkManager?.connect(tokenId);
                 self.ProcessLogin();
             }
         });

@@ -73,8 +73,8 @@ export class SceneManager extends Component {
         switch(this.gameState){
             case "MENU":
                 {
-                    // this.signUp();
-                    this.login();
+                    this.signUp();
+                    // this.login();
                     break;
                 }
         }
@@ -82,8 +82,8 @@ export class SceneManager extends Component {
 
     signUp() {
         // signup
-        const email = `user001@gmail.com`;
-        const user = `user001`;
+        const email = `user002@gmail.com`;
+        const user = `user002`;
         const password = `12345678`;
         const self = this;
         cv.httpHandler?.userSignUp(user, email, password, (res: RequestResponse) => {
