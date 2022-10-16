@@ -1,4 +1,4 @@
-import { _decorator, Component, director, profiler, game, Game, resources } from 'cc';
+import { _decorator, Component, director, profiler, game, Game, resources, Label, EditBox } from 'cc';
 import { AudioManager } from '../../frameworks/audioManager';
 import { playerData } from '../../frameworks/playerData';
 import { uiManager } from '../../frameworks/uiManager';
@@ -22,6 +22,33 @@ const { ccclass, property } = _decorator;
 export class LoginScene extends Component {
     currentStep: any = null!;
     isLoadCsvFinishd: any = false;
+
+    @property(Label) emailLb: Label = null!;
+    @property(Label) passLb: Label = null!;
+
+    private email: string = '';
+    private password: string = '';
+    private username: string = '';
+
+    public updateUsername(editbox: EditBox, customEventData: CustomEvent) {
+        this.username = editbox.textLabel!.string;
+    }
+
+    public updateEmail(editbox: EditBox, customEventData: CustomEvent) {
+        this.email = editbox.textLabel!.string;
+    }
+
+    public updatePassword(editbox: EditBox, customEventData: CustomEvent) {
+        this.password = editbox.textLabel!.string;
+    }
+
+    public emailUpdate(email: string) {
+        this.emailLb.string = email;
+    }
+
+    public passUpdate(pass: string) {
+        this.passLb.string = pass;
+    }
 
     showAdsBanner() {
         nativeEvent.getInstance().hideAdsBanner();
@@ -165,9 +192,31 @@ export class LoginScene extends Component {
     onBtnLoginByUserName() {
         const userName = `user001@gmail.com`;
         const password = `12345678`;
-        console.log(`********** Login by user/ pass`);
+        console.log(`********** Login by user/ pass : ${this.email} / ${this.password}`);
         const self = this;
-        cv.httpHandler?.userLogIn(userName, password, (res: RequestResponse) => {
+        cv.httpHandler?.userLogIn(this.email, this.password, (res: RequestResponse) => {
+            if (res?.error == true) {
+                console.log(`Login have some error .........`);
+            }
+            else {
+                //do something with data from server
+                const data = res.output.user;
+                console.log(`Login data : ${JSON.stringify(data)}`);
+                // build data for user here
+                // login lobby with token.
+                const tokenId = data.pendingTokenId || '';
+                playerData.instance.tokenId = tokenId;
+                cv.networkManager?.connect(tokenId);
+                self.ProcessLogin();
+            }
+        });
+        
+    }
+
+    onBtnSignupByUserName() {
+        console.log(`********** Signup by user/ email/ pass : ${this.username} / ${this.email} / ${this.password}`);
+        const self = this;
+        cv.httpHandler?.userSignUp(this.username, this.email, this.password, (res: RequestResponse) => {
             if (res?.error == true) {
                 console.log(`Login have some error .........`);
             }
