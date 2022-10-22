@@ -2,11 +2,13 @@
   "ver": "1.1.0",
   "importer": "directory",
   "imported": true,
-  "uuid": "0671317b-a15f-490d-8bc2-51b0e907f6db",
+  "uuid": "c46f70a2-50b4-4de2-9960-8c8bf253b048",
   "files": [],
   "subMetas": {},
   "userData": {
     "compressionType": {},
-    "isRemoteBundle": {}
+    "isRemoteBundle": {},
+    "isBundle": true,
+    "bundleName": "candyBundle"
   }
 }

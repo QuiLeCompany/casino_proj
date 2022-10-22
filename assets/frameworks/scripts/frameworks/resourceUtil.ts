@@ -1,15 +1,27 @@
-import { _decorator, Prefab, Node, SpriteComponent, SpriteFrame, ImageAsset, resources, error, Texture2D, instantiate, isValid, find, TextAsset, JsonAsset, Sprite, Rect, loader, Widget, Scene } from "cc";
+import { _decorator, Prefab, Node, SpriteComponent, SpriteFrame, ImageAsset, resources, error, Texture2D, instantiate, isValid, find, TextAsset, JsonAsset, Sprite, Rect, loader, Widget, Scene, assetManager, AssetManager } from "cc";
 const { ccclass } = _decorator;
 
 @ccclass("resourceUtil")
 export class resourceUtil {
+
+    public static loadBundle(bundleName: string, options: any, cb: Function = () => { }) {
+        assetManager.loadBundle(bundleName, options, (err: any, bundle: any) => {
+            if (err) {
+                error(err.message || err);
+                cb && cb(err, bundle);
+                return;
+            }
+
+            cb && cb(null, bundle);
+        });
+    }
     /**
- * 加载资源
- * @param url   资源路径
- * @param type  资源类型
- * @param cb    回调
- * @method loadRes
- */
+     * 加载资源
+     * @param url   资源路径
+     * @param type  资源类型
+     * @param cb    回调
+     * @method loadRes
+     */
     public static loadRes(url: string, type: any, cb: Function = () => { }) {
         resources.load(url, (err: any, res: any) => {
             if (err) {
@@ -229,6 +241,31 @@ export class resourceUtil {
         });
     }
 
+    public static setSpriteFrameFromBundle(bundleName: string, path: string, sprite: SpriteComponent, cb: Function) {
+        this.loadBundle(bundleName, {}, (err: any, bundle: AssetManager.Bundle) => {
+            if (err) {
+                console.error('set sprite frame from bundle failed! err:', path, err);
+                cb(err);
+                return;
+            }
+
+            if (bundle) {
+                bundle.load(path + '/spriteFrame', SpriteFrame, (err: any, spriteFrame: SpriteFrame) => {
+                    if (err) {
+                        console.error(`bundle [${bundleName}] load sprite path [${path} failed with err [${err}]]`);
+                        cb(err);
+                        return;
+                    }
+        
+                    if (sprite && isValid(sprite)) {
+                        sprite.spriteFrame = spriteFrame;
+                        cb(null);
+                    }
+                });
+            }
+        })
+    }
+
     /**
      * 设置精灵贴图
      * @param path 资源路径
@@ -258,7 +295,7 @@ export class resourceUtil {
      * @param {fn} cb
      */
     public static setPropIcon(prop: any, sprite: any, cb: any) {
-        this.setSpriteFrame('gamePackages/textures/icons/props/' + prop, sprite, cb);
+        this.setSpriteFrameFromBundle('candyBundle','gamePackages/textures/icons/props/' + prop, sprite, cb);
     }
 
     /**
@@ -316,7 +353,7 @@ export class resourceUtil {
      * @param {function} cb 回调函数
      */
     public static setCakeIcon(cake: any, sprite: any, cb: any) {
-        this.setSpriteFrame('gamePackages/textures/icons/cakes/' + cake, sprite, cb);
+        this.setSpriteFrameFromBundle('candyBundle', 'gamePackages/textures/icons/cakes/' + cake, sprite, cb);
     }
 
     public static createEffect(path: any, cb: any, parent: any) {
@@ -345,11 +382,10 @@ export class resourceUtil {
      * @param node          root node
      * @param bTransChild   should traverse through all childrent (default is false)
      */
-     public static updateWidget(node: Node, bTransChild: boolean = false, alignMode: Widget.AlignMode): void {
+    public static updateWidget(node: Node, bTransChild: boolean = false, alignMode: Widget.AlignMode): void {
         if (!node) return;
         let isNodeAScene: boolean = node instanceof Scene;
-        if (!isNodeAScene)
-        {
+        if (!isNodeAScene) {
             let widget: Widget | null = node.getComponent(Widget);
             if (widget) {
                 widget.enabled = true;
