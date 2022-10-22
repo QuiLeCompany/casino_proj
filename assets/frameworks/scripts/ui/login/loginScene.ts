@@ -22,8 +22,8 @@ export class LoginScene extends Component {
     currentStep: any = null!;
     isLoadCsvFinishd: any = false;
 
-    @property(Label) emailLb: Label = null!;
-    @property(Label) passLb: Label = null!;
+    @property(EditBox) emailLb: EditBox = null!;
+    @property(EditBox) passLb: EditBox = null!;
 
     private email: string = '';
     private password: string = '';
@@ -79,6 +79,9 @@ export class LoginScene extends Component {
         if (!playerData.instance.playerInfo || !playerData.instance.playerInfo.createDate) {
             playerData.instance.createPlayerInfo();
         }
+
+        this.emailUpdate(playerData.instance.playerInfo["username"] || "");
+        this.passUpdate(playerData.instance.playerInfo["password"] || "");
 
         //记录离线时间
         game.on(Game.EVENT_HIDE, () => {
@@ -177,7 +180,11 @@ export class LoginScene extends Component {
                 // build data for user here
                 // login lobby with token.
                 const tokenId = data.pendingTokenId || '';
+                playerData.instance.updatePlayerInfo("username", this.email);
+                playerData.instance.updatePlayerInfo("password", this.password);
                 playerData.instance.tokenId = tokenId;
+                StorageManager.instance.save();
+
                 cv.networkManager?.connect(tokenId);
                 self.ProcessLogin();
             }
@@ -200,7 +207,9 @@ export class LoginScene extends Component {
                 // login lobby with token.
                 const tokenId = data.pendingTokenId || '';
                 playerData.instance.tokenId = tokenId;
+                playerData.instance.createPlayerInfo({"username": this.email, "password": this.password});
                 cv.networkManager?.connect(tokenId);
+                StorageManager.instance.save();
                 self.ProcessLogin();
             }
         });

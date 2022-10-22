@@ -214,6 +214,7 @@ export class playerData extends Component {
             }
         } else {
             this._playerInfo[key] = value;
+            isChanged = true;
         }
         if (isChanged) {
             //有修改就保存到localcache
