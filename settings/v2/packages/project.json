@@ -3,13 +3,20 @@
   "general": {
     "designResolution": {
       "fitHeight": false,
-      "width": 1600,
-      "height": 900
+      "width": 768,
+      "height": 1363,
+      "fitWidth": true
     }
   },
   "fbx": {
     "legacyFbxImporter": {
       "visible": true
     }
-  }
+  },
+  "layer": [
+    {
+      "name": "default",
+      "value": 1
+    }
+  ]
 }

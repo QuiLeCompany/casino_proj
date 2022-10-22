@@ -13,13 +13,9 @@ export class User extends BaseEntity {
     @Property() username!: string;
     @Property() email!: string;
     @Property() password!: string;
-    @Property() pendingSessionId: string;
-    @Property() pendingSessionTimestamp: number;
+    @Property() pendingTokenId: string;
+    @Property() pendingTokenTimestamp: number;
+    @Property() activeTokenId: string;
     @Property() activeSessionId: string;
-    @Property() progress: string = "0,0";
-    @Property() prevGrid: string = "0,0";
-    @Property() position: Position;
-    @Property() rotation: Rotation;
-    @Property() avatar: AvatarState
     @Property() coins: number;
 }
