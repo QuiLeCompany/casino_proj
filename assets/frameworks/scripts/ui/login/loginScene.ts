@@ -16,7 +16,7 @@ import { util } from '../../frameworks/util';
 import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
 import { RequestResponse } from '../../frameworks/models/RequestResponse';
-import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
+import { CLIENT_EVENT_NAME, GameConfig } from '../../../../casino/scripts/config/GameConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')
@@ -59,12 +59,6 @@ export class LoginScene extends Component {
 
     onLoad() {
         this.showAdsBanner();
-
-        if (mahjongConfig.instance.isMahjongGame && !mahjongConfig.instance.isLoaded) {
-            this.preloadMahjongGame();
-            mahjongConfig.instance.isLoaded = true;
-        }
-    
         if (!constants.IS_SHOW_PROFILE_STATUS)
             profiler.hideStats();
 
@@ -75,7 +69,7 @@ export class LoginScene extends Component {
             AudioManager.instance.playMusic(soundName, true, true);
 
         //初始化玩家数据
-        MahjongSingleton.IS_CLEAN_DATA_DB && StorageManager.instance.cleanAllData();
+        GameConfig.IS_CLEAN_DATA_DB && StorageManager.instance.cleanAllData();
         playerData.instance.loadGlobalCache();
         if (!playerData.instance.userId) {
             playerData.instance.generateRandomAccount();
@@ -103,36 +97,19 @@ export class LoginScene extends Component {
         localConfig.instance.loadConfig(() => {
             this.isLoadCsvFinishd = true;
         })
-
-        //For Mahjong
-        mahjongConfig.instance.mahjongConfig(() => {
-            console.log(`Finished init ..........mahjong config`);
-        });
-    }
-
-    preloadMahjongGame() {
-        //preload data
-        resources.preloadDir(`mahjong/fight/chinese/normal`);
-        resources.preloadDir(`mahjong/fight/chinese/disable`);
-        resources.preloadDir(`mahjong/fight/chinese/focus`);
-
-        //data of emoji
-        resources.preloadDir(`mahjong/fight/emoji/normal`);
-        resources.preloadDir(`mahjong/fight/emoji/disable`);
-        resources.preloadDir(`mahjong/fight/emoji/focus`);
     }
 
     showLoadingUI() {
         var _this = this;
         this.currentStep = 0;
         var loginTimeOut = function () {
-            uiManager.instance.showTips(i18n.t("login/timeout"), function () {
+            uiManager.instance.showTips(i18n.t(GameConfig.TIP.LOGIN_TIME_OUT), function () {
                 _this.showLoadingUI();
             })
         };
         this.scheduleOnce(loginTimeOut, 30);
 
-        let dialogLoading = mahjongConfig.instance.isMahjongGame? `common/loading` : `common/loading`;
+        let dialogLoading = GameConfig.POPUP.LOADING;
         uiManager.instance.showDialog(dialogLoading);
 
         SceneManager.instance.load([
@@ -176,7 +153,7 @@ export class LoginScene extends Component {
             director.preloadScene(targetScene, function () {
                 director.loadScene(targetScene, function () {
                     _this.currentStep = 5;
-                    clientEvent.dispatchEvent("onSceneChanged");
+                    clientEvent.dispatchEvent(CLIENT_EVENT_NAME.ON_SCENE_CHANGE);
                     GameLogic.instance.afterLogin();
                 });
             })
@@ -189,8 +166,6 @@ export class LoginScene extends Component {
     }
 
     onBtnLoginByUserName() {
-        const userName = `user001@gmail.com`;
-        const password = `12345678`;
         console.log(`********** Login by user/ pass : ${this.email} / ${this.password}`);
         const self = this;
         cv.httpHandler?.userLogIn(this.email, this.password, (res: RequestResponse) => {
