@@ -2,10 +2,9 @@
 import { _decorator, Component, Node, systemEvent, SystemEvent, Vec2, Label, Color } from 'cc';
 import { Board } from './board';
 import Colyseus, { Room } from 'db://colyseus-sdk/colyseus.js';
-import { RequestResponse } from '../frameworks/scripts/frameworks/models/RequestResponse';
-import cv from '../frameworks/scripts/frameworks/cv';
-import { RoomState } from '../../Server/src/rooms/schema/RoomState';
-import { playerData } from '../frameworks/scripts/frameworks/playerData';
+import { RequestResponse } from '../../../../frameworks/scripts/frameworks/models/RequestResponse';
+import cv from '../../../../frameworks/scripts/frameworks/cv';
+import { playerData } from '../../../../frameworks/scripts/frameworks/playerData';
 
 const { ccclass, property } = _decorator;
 @ccclass('SceneManager')
