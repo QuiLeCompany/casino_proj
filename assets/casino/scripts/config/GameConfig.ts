@@ -11,7 +11,7 @@ export class GameConfig {
     public static GAME_VERSION = '0.0.1';
     public static GAME_FRAME = 60;      //游戏当前帧率
     public static GAME_INIT_FRAME = 60; //游戏开发基础帧率
-    public static IS_DEBUG_MODE: boolean = !true;
+    public static IS_DEBUG_MODE: boolean = true;
     public static IS_CLEAN_DATA_DB = false;
 
     public static POPUP = {

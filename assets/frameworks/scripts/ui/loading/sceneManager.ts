@@ -1,4 +1,5 @@
 import { _decorator, Component, game, director, instantiate, find } from 'cc';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 import { clientEvent } from '../../frameworks/clientEvent';
 import { resourceUtil } from '../../frameworks/resourceUtil'
 import { mahjongConfig } from '../../mahjong/mahjongConfig';
@@ -27,7 +28,7 @@ export class SceneManager extends Component {
     }
 
     loadScene(sceneName: any, tasks: any, callback: any) {
-        if (mahjongConfig.instance.IS_DEBUG_MODE)
+        if (GameConfig.IS_DEBUG_MODE)
         {
             console.log(`#### Load Scene :
                 - scene name : ${sceneName}
