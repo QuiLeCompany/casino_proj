@@ -9,8 +9,6 @@ import * as i18n from '../../../../../extensions/i18n/assets/LanguageData';
 import { constants } from '../../shared/constants';
 import { localConfig } from '../../frameworks/localConfig';
 import { StorageManager } from '../../frameworks/storageManager';
-import { mahjongConfig, MAHJONG, IPAD_NAME } from '../../mahjong/mahjongConfig';
-import { MahjongSingleton } from '../../mahjong/mahjongSingleton';
 import { nativeEvent } from '../../frameworks/nativeEvent';
 import { util } from '../../frameworks/util';
 import cv from '../../frameworks/cv';
@@ -64,7 +62,7 @@ export class LoginScene extends Component {
 
         //初始化音频
         AudioManager.instance.init();
-        let soundName = mahjongConfig.instance.isMahjongGame? constants.AUDIO_MUSIC.MAHJONG_BG : constants.AUDIO_MUSIC.BACKGROUND;
+        let soundName = constants.AUDIO_MUSIC.BACKGROUND;
         if (!AudioManager.instance.isMusicPlaying(soundName))
             AudioManager.instance.playMusic(soundName, true, true);
 

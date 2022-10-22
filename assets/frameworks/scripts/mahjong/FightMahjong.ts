@@ -8,7 +8,6 @@ import { uiManager } from '../frameworks/uiManager';
 import { constants } from '../shared/constants';
 import { utils } from '../shared/utils';
 import { BlockInfo, BlockSprite, BLSTATE, BSIZE, MahjongGame, OFFSET, STYLE } from './BlockSprite';
-import { mahjongConfig } from './mahjongConfig';
 import { LEVELDATA } from './MahjongLevel';
 import { MahjongSingleton, MHJ_GAME_SAVE, PATH_UI } from './mahjongSingleton';
 const { ccclass, property } = _decorator;

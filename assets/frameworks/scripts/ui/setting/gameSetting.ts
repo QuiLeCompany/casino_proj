@@ -1,8 +1,8 @@
 import { _decorator, Component, Node, find } from 'cc';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 import { AudioManager } from '../../frameworks/audioManager';
 import { GameLogic } from '../../frameworks/gameLogic';
 import { uiManager } from '../../frameworks/uiManager';
-import { mahjongConfig } from '../../mahjong/mahjongConfig';
 import { SceneManager } from '../loading/sceneManager';
 
 const { ccclass, property } = _decorator;
@@ -29,7 +29,7 @@ export class gameSetting extends Component {
     }
 
     onBtnHomeClick() {
-        let home = mahjongConfig.instance.isMahjongGame ? `home` : `pve`;
+        let home = GameConfig.SCENE.LOBBY;
         SceneManager.instance.loadScene(home, [], (err: any, result: any) => {
             if (err) {
                 console.error(err.message || err);

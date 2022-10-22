@@ -2,7 +2,6 @@ import { _decorator, Component, game, director, instantiate, find } from 'cc';
 import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 import { clientEvent } from '../../frameworks/clientEvent';
 import { resourceUtil } from '../../frameworks/resourceUtil'
-import { mahjongConfig } from '../../mahjong/mahjongConfig';
 import { constants } from '../../shared/constants';
 import { LoadingUI } from './loadingUI';
 

@@ -5,7 +5,6 @@ import { constants } from '../../shared/constants';
 import * as i18n from '../../../../../extensions/i18n/assets/LanguageData';
 import { uiManager } from '../../frameworks/uiManager';
 import { SceneManager } from '../loading/sceneManager';
-import { mahjongConfig, MAHJONG } from '../../mahjong/mahjongConfig';
 import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 
 const { ccclass, property } = _decorator;
