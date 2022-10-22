@@ -16,6 +16,7 @@ import { util } from '../../frameworks/util';
 import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
 import { RequestResponse } from '../../frameworks/models/RequestResponse';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')
@@ -166,10 +167,8 @@ export class LoginScene extends Component {
 
     enterMainScene(cb: any) {
         var _this = this;
-        let isIpad = mahjongConfig.instance.IS_IPAD;
-        let nameMahjongScene = `${MAHJONG}${isIpad ? IPAD_NAME : ''}`;
-        let gameScene = mahjongConfig.instance.isMahjongGame? `fight${nameMahjongScene}` : `fight`;
-        let targetScene = mahjongConfig.instance.isMahjongGame ? gameScene : playerData.instance.isNewBee ? gameScene : 'lobby';
+        let isIpad = cv.gameConfig?.IS_IPAD;
+        let targetScene = GameConfig.SCENE.LOBBY;
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
