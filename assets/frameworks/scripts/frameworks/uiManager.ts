@@ -3,7 +3,6 @@ import { resourceUtil } from "./resourceUtil";
 import { poolManager } from "./poolManager";
 import { AnimationUI } from "../ui/common/animationUI";
 import { tips } from "../ui/common/tips";
-import { MahjongSingleton } from "../mahjong/mahjongSingleton";
 const { ccclass, property } = _decorator;
 
 const SHOW_STR_INTERVAL_TIME = 800;
@@ -49,7 +48,6 @@ export class uiManager {
      * @param {Function} cb 回调函数，创建完毕后回调
      */
     public showDialog(panelPath: string, args?: any, cb?: Function) {
-        MahjongSingleton.IS_DEBUG_FROM_DIALOG && console.error(`**** show dialog : ${panelPath}`);
         if (this._dictLoading[panelPath]) {
             return;
         }
