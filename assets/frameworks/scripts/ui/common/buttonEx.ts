@@ -1,6 +1,5 @@
 import { _decorator, Button } from 'cc';
 import { AudioManager } from '../../frameworks/audioManager';
-import { mahjongConfig } from '../../mahjong/mahjongConfig';
 import { constants } from '../../shared/constants';
 const { ccclass, property } = _decorator;
 
@@ -32,7 +31,7 @@ export class ButtonEx extends Button {
                 }, this.preventTime);
             }
             if (this.isPlaySound) {
-                let soundName = mahjongConfig.instance.isMahjongGame? constants.AUDIO_SOUND.MAHJONG_CLICK : constants.AUDIO_SOUND.CLICK;
+                let soundName = constants.AUDIO_SOUND.CLICK;
                 AudioManager.instance.playSound(soundName, false);
             }
 

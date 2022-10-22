@@ -5,7 +5,7 @@ import { constants } from '../../shared/constants';
 import * as i18n from '../../../../../extensions/i18n/assets/LanguageData';
 import { uiManager } from '../../frameworks/uiManager';
 import { SceneManager } from '../loading/sceneManager';
-import { mahjongConfig, MAHJONG } from '../../mahjong/mahjongConfig';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 
 const { ccclass, property } = _decorator;
 
@@ -104,7 +104,7 @@ export class LevelUI extends Component {
         // let timeStamp = Date.now();
         try {
             playerData.instance.level = this.levelInfo.ID;
-            let gameScene = mahjongConfig.instance.isMahjongGame? `fight${MAHJONG}` : `main`;
+            let gameScene = GameConfig.SCENE.TEST;
             SceneManager.instance.loadScene(gameScene, [
                 function (cb: any) {
                     cb();
