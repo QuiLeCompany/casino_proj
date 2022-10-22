@@ -43,10 +43,12 @@ export class LoginScene extends Component {
 
     public emailUpdate(email: string) {
         this.emailLb.string = email;
+        this.email = email;
     }
 
     public passUpdate(pass: string) {
         this.passLb.string = pass;
+        this.password = pass;
     }
 
     showAdsBanner() {
