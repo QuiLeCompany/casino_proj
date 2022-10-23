@@ -9,7 +9,7 @@ export class webViewGame extends Component {
 
     public urlGame: string = "https://cdn.oryxgaming.com/badges/GMT/_OD1/v2.0.20/index.html?token=token&gameCode=GMT_HAWAIIAN_DREAM&languageCode=ENG&playMode=FUN&isGameBridge=true";
 
-    
+
     onLoad() {
         log(`********** ON LOOAD ***********`);
     }
@@ -31,8 +31,6 @@ export class webViewGame extends Component {
     onBtnHide() {
         this.node.active = false;
     }
-
-
 
 }
 
