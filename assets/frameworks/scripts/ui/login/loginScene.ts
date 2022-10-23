@@ -14,7 +14,8 @@ import { util } from '../../frameworks/util';
 import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
 import { RequestResponse } from '../../frameworks/models/RequestResponse';
-import { CLIENT_EVENT_NAME, GameConfig } from '../../../../casino/scripts/config/GameConfig';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
+import { CLIENT_EVENT_NAME } from "../../../../casino/scripts/config/CLIENT_EVENT_NAME";
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')

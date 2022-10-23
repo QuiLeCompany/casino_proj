@@ -1,10 +1,6 @@
 import { Game, screen } from 'cc';
 import { util } from "../../../frameworks/scripts/frameworks/util";
 
-export enum CLIENT_EVENT_NAME {
-    ON_SCENE_CHANGE = 'onSceneChanged',
-}
-
 export class GameConfig {
     // static config
     public static GAME_NAME = 'Casino';

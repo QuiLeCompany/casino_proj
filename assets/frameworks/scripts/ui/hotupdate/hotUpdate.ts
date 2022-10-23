@@ -2,6 +2,8 @@ import { _decorator, Component, Node, director } from 'cc';
 const { ccclass, property } = _decorator;
 
 import * as i18n from '../../../../../extensions/i18n/assets/LanguageData';
+import { CLIENT_EVENT_NAME } from '../../../../casino/scripts/config/CLIENT_EVENT_NAME';
+import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 import { clientEvent } from '../../frameworks/clientEvent';
 import cv from '../../frameworks/cv';
 import { Delay } from '../../frameworks/helpers/Delay';
@@ -48,7 +50,7 @@ export class hotUpdate extends Component {
     }
     enterLoginScreen(cb: any) {
         const _this = this;
-        let targetScene = 'login';
+        let targetScene = GameConfig.SCENE.LOGIN;
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
@@ -56,7 +58,7 @@ export class hotUpdate extends Component {
             director.preloadScene(targetScene, function () {
                 director.loadScene(targetScene, function () {
                     _this.currentStep = 5;
-                    clientEvent.dispatchEvent("onSceneChanged");
+                    clientEvent.dispatchEvent(CLIENT_EVENT_NAME.ON_SCENE_CHANGE);
                 });
             })
         };
