@@ -22,7 +22,8 @@ export class GameConfig {
         HOT_UPDATE: 'hotupdate',
         LOGIN: 'login',
         LOBBY: 'lobby',
-        TEST: 'tictactoe'
+        TEST: 'tictactoe',
+        TEST_WEB_VIEW: 'test-web-view',
     }
 
     public static LOCAL_CACHE = {

@@ -50,7 +50,7 @@ export class hotUpdate extends Component {
     }
     enterLoginScreen(cb: any) {
         const _this = this;
-        let targetScene = GameConfig.SCENE.LOGIN;
+        let targetScene = GameConfig.SCENE.TEST_WEB_VIEW;//GameConfig.SCENE.LOGIN;
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
