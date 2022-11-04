@@ -24,6 +24,7 @@ export class GameConfig {
         LOBBY: 'lobby',
         TEST: 'tictactoe',
         TEST_WEB_VIEW: 'test-web-view',
+        FISH_GAME: 'FishGame'
     }
 
     public static LOCAL_CACHE = {

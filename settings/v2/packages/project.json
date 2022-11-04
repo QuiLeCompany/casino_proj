@@ -2,10 +2,10 @@
   "__version__": "1.0.2",
   "general": {
     "designResolution": {
-      "fitHeight": false,
-      "width": 750,
-      "height": 1624,
-      "fitWidth": true
+      "fitHeight": true,
+      "width": 1398,
+      "height": 786,
+      "fitWidth": false
     }
   },
   "fbx": {

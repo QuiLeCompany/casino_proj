@@ -22,7 +22,7 @@ export class hotUpdate extends Component {
 
     async start() {
         console.log(`*************** START HOT UPDATE ****************`);
-        await Delay.delay(3000);
+        await Delay.delay(500);
         console.log(`*************** OK ****************`);
         cv.init();
 
@@ -50,7 +50,7 @@ export class hotUpdate extends Component {
     }
     enterLoginScreen(cb: any) {
         const _this = this;
-        let targetScene = GameConfig.SCENE.TEST_WEB_VIEW;//GameConfig.SCENE.LOGIN;
+        let targetScene = GameConfig.SCENE.FISH_GAME;
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
