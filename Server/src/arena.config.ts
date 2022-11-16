@@ -46,10 +46,10 @@ export default Arena({
         // Register routes for our simple user auth
         app.use("/users", userRoutes);
 
-        // Connect to our database
-        connect().then(async () => {
-            logger.silly(`*** Connected to Database! ***`);
-        });
+        // // Connect to our database
+        // connect().then(async () => {
+        //     logger.silly(`*** Connected to Database! ***`);
+        // });
 
         app.get("/", (req, res) => {
             res.send("It's time to kick ass and chew bubblegum!");
