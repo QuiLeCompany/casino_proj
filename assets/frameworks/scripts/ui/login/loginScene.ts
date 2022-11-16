@@ -230,10 +230,10 @@ export class LoginScene extends Component {
         const self = this;
 
         if (GameConfig.USE_SUPABASE) {
-            cv.supabase?.signUpByEmail(this.email, this.password, (data: any, error: any) =>{
+            cv.supabase?.signUpByEmail(this.email, this.password, (authRes: AuthResponse) =>{
                 console.log(`SignUp SUPABASE ---
-                    data: ${data}
-                    error: ${error}
+                    data: ${authRes.data}
+                    error: ${authRes.error}
                 `)
             });
         }
