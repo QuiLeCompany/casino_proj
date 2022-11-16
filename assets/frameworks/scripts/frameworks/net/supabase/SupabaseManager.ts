@@ -1,4 +1,5 @@
 import Supabase from '@supabase/supabase-js/dist/umd/supabase.js'
+import { AuthResponse } from '@supabase/gotrue-js/src/lib/types';
 
 export default class SupabaseManager {
 
@@ -31,7 +32,7 @@ export default class SupabaseManager {
         `);
     }
 
-    public async signUpByEmail(email: string, password: string, callback = (data: any, error: any)=>{}) {
+    public async signUpByEmail(email: string, password: string, callback = (authRespone: AuthResponse)=>{}) {
         const { data, error } = await this.supabaseClient.auth.signUp({
             email:      email,
             password:   password,
@@ -42,10 +43,10 @@ export default class SupabaseManager {
             error: ${error}
         `);
 
-        callback && callback(data, error);
+        callback && callback({data: data, error: null});
     }
 
-    public async signInWithPassword(email: string, password: string, callback = (data: any, error: any)=>{}) {
+    public async signInWithPassword(email: string, password: string, callback = (authRespone: AuthResponse)=>{}) {
         const { data, error } = await this.supabaseClient.auth.signInWithPassword({
             email:      email,
             password:   password,
@@ -56,7 +57,7 @@ export default class SupabaseManager {
             error: ${error}
         `);
 
-        callback && callback(data, error);
+        callback && callback({data: data, error: null});
     }
 
     public async signOut(email: string, password: string) {

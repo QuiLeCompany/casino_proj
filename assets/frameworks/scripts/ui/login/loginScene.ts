@@ -18,6 +18,8 @@ import { GameConfig } from '../../../../casino/scripts/config/GameConfig';
 import { CLIENT_EVENT_NAME } from "../../../../casino/scripts/config/CLIENT_EVENT_NAME";
 const { ccclass, property } = _decorator;
 
+import { AuthResponse } from '@supabase/gotrue-js/src/lib/types';
+
 @ccclass('LoginScene')
 export class LoginScene extends Component {
     currentStep: any = null!;
@@ -174,19 +176,19 @@ export class LoginScene extends Component {
         const self = this;
 
         if (GameConfig.USE_SUPABASE) {
-            cv.supabase?.signInWithPassword(this.email, this.password, (data: any, error: any) =>{
+            cv.supabase?.signInWithPassword(this.email, this.password, (authResponse: AuthResponse) =>{
 
                 console.log(`SignIn SUPABASE ---
-                    data: ${data}
-                    error: ${error}
+                    data: ${authResponse.data}
+                    error: ${authResponse.error}
                 `)
 
-                if (error != null) {
-                    console.log(`Login Error: ${error}`);
+                if (authResponse.error != null) {
+                    console.log(`Login Error: ${authResponse.error}`);
                     return;
                 }
                 
-                const tokenId = data.session.access_token;
+                const tokenId = authResponse?.data?.session?.access_token || "";
                 playerData.instance.updatePlayerInfo("username", this.email);
                 playerData.instance.updatePlayerInfo("password", this.password);
                 playerData.instance.tokenId = tokenId;
