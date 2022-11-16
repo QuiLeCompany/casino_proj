@@ -35,6 +35,7 @@
     "@colyseus/social": "^0.10.9",
     "@mikro-orm/core": "^4.5.5",
     "@mikro-orm/mongodb": "^4.5.5",
+    "@supabase/supabase-js": "^2.1.0",
     "bcrypt": "^5.1.0",
     "colyseus": "^0.14.0",
     "cors": "^2.8.5",

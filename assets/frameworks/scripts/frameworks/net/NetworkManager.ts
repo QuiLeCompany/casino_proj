@@ -18,8 +18,8 @@ export class NetworkManager {
         this.client = new Colyseus.Client("ws://localhost:2567");
     }
 
-    async connect(tokenId: string) {
-        this.lobby = await this.client!.joinOrCreate("lobby", {tokenId: tokenId});  
+    async connect(userId: string) {
+        this.lobby = await this.client!.joinOrCreate("lobby", {userId: userId});  
         const self = this;
         this.lobby.onMessage("rooms", (rooms) => {
             console.log(`*********** get all rooms after join ${JSON.stringify(rooms)}`);

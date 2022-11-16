@@ -68,4 +68,13 @@ export default class SupabaseManager {
         `);
     }
 
+    public async getSession() {
+        const { data, error } = await this.supabaseClient.auth.getSession();
+
+        console.log(`[SUPABASE] .. getSession ...
+            data: ${JSON.stringify(data)}
+            error: ${error}
+        `);
+    }
+
 }

@@ -188,13 +188,13 @@ export class LoginScene extends Component {
                     return;
                 }
                 
-                const tokenId = authResponse?.data?.session?.access_token || "";
+                const userId = authResponse?.data?.session?.user?.id || "";
                 playerData.instance.updatePlayerInfo("username", this.email);
                 playerData.instance.updatePlayerInfo("password", this.password);
-                playerData.instance.tokenId = tokenId;
+                playerData.instance.tokenId = authResponse?.data?.session?.access_token || "";
                 StorageManager.instance.save();
 
-                // cv.networkManager?.connect(tokenId);
+                cv.networkManager?.connect(userId);
                 self.ProcessLogin();
             });
         }

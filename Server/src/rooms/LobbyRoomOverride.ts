@@ -6,39 +6,31 @@ import { User } from "../entities/UserEntity";
 import { LobbyRoom } from "colyseus";
 import { LobbyOptions } from 'colyseus/lib/rooms/LobbyRoom';
 
+import supabase, { createClient } from '@supabase/supabase-js'
+
 export class LobbyRoomOverride extends LobbyRoom {
 
+    readonly SUPABASE_URL = "https://popahsqojmkutrjajtsj.supabase.co";
+    readonly SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcGFoc3Fvam1rdXRyamFqdHNqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY2ODA1MDcwMCwiZXhwIjoxOTgzNjI2NzAwfQ.RNxZ39UfPhoOa5MdZmgjILMVjqGeT87XKZW37uK6NFQ";
+
+    private supabaseClient: supabase.SupabaseClient;
+
     async onCreate(options: any): Promise<void> {
+        this.supabaseClient = createClient(this.SUPABASE_URL, this.SUPABASE_SERVICE_KEY);
         await super.onCreate(options);
     }
 
     /** onAuth is called before onJoin */
     async onAuth(client: Client, options: any, request: any) {
         logger.info(`*********************** LOBBY AUTH ${client.sessionId} option: ${JSON.stringify(options)}*********************** `);
-        const tokenId = !!(options?.tokenId) ? options.tokenId : "";
-        const userRepo = DI.em.fork().getRepository(User);
+        const userId = !!(options?.userId) ? options.userId : "";
 
-        // Check for a user with a pending sessionId that matches this client's sessionId
-        let user: User = await userRepo.findOne({ pendingTokenId: tokenId });
-
-        if (user) {
-            // A user with the pendingSessionId does exist
-
-            // Update user; clear their pending session Id and update their active session Id
-            user.activeSessionId = client.sessionId;
-            user.activeTokenId = tokenId;
-            user.pendingTokenId = "";
-
-            // Save the user changes to the database
-            await userRepo.flush();
-
-            // Returning the user object equates to returning a "truthy" value that allows the onJoin function to continue
-            return user;
+        const { data, error } = await this.supabaseClient.auth.admin.getUserById(userId);
+        if (error == null) {
+            return data;
         }
         else {
-            // No user object was found with the pendingSessionId like we expected
-            logger.error(`On Auth - No user found for session Id - ${client.sessionId}`);
-
+            logger.error(`On Auth - No user found for Id - ${client.sessionId} - ${error}`);
             throw new ServerError(400, "Bad session!");
         }
     }
@@ -48,21 +40,13 @@ export class LobbyRoomOverride extends LobbyRoom {
     }
 
     async onLeave(client: Client) {
+        console.log(`onLeave ....`);
         super.onLeave(client);
-
-        const userRepo = DI.em.fork().getRepository(User);
-        // Find the user object in the database by their activeSessionId
-        let user: User = await userRepo.findOne({ activeSessionId: client.sessionId });
-        if (user) {
-            user.activeSessionId = "";
-            user.activeTokenId = "";
-            
-            // Save the user's changes to the database
-            await userRepo.flush();
-        }
+        this.supabaseClient = null;
     }
 
     onDispose(): void {
+        console.log(`onDispose ....`);
         super.onDispose();
     }
 }
