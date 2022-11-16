@@ -50,7 +50,7 @@ export class hotUpdate extends Component {
     }
     enterLoginScreen(cb: any) {
         const _this = this;
-        let targetScene = GameConfig.SCENE.FISH_GAME;
+        let targetScene = GameConfig.SCENE.LOGIN; //GameConfig.SCENE.FISH_GAME;
         var onSceneLoaded = function () {
             _this.currentStep = 4;
             cb();
