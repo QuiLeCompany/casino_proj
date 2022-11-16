@@ -172,51 +172,89 @@ export class LoginScene extends Component {
     onBtnLoginByUserName() {
         console.log(`********** Login by user/ pass : ${this.email} / ${this.password}`);
         const self = this;
-        cv.httpHandler?.userLogIn(this.email, this.password, (res: RequestResponse) => {
-            if (res?.error == true) {
-                console.log(`Login have some error .........`);
-            }
-            else {
-                //do something with data from server
-                const data = res.output.user;
-                console.log(`Login data : ${JSON.stringify(data)}`);
-                // build data for user here
-                // login lobby with token.
-                const tokenId = data.pendingTokenId || '';
+
+        if (GameConfig.USE_SUPABASE) {
+            cv.supabase?.signInWithPassword(this.email, this.password, (data: any, error: any) =>{
+
+                console.log(`SignIn SUPABASE ---
+                    data: ${data}
+                    error: ${error}
+                `)
+
+                if (error != null) {
+                    console.log(`Login Error: ${error}`);
+                    return;
+                }
+                
+                const tokenId = data.session.access_token;
                 playerData.instance.updatePlayerInfo("username", this.email);
                 playerData.instance.updatePlayerInfo("password", this.password);
                 playerData.instance.tokenId = tokenId;
                 StorageManager.instance.save();
 
-                cv.networkManager?.connect(tokenId);
+                // cv.networkManager?.connect(tokenId);
                 self.ProcessLogin();
-            }
-        });
+            });
+        }
+
+        else {
+            cv.httpHandler?.userLogIn(this.email, this.password, (res: RequestResponse) => {
+                if (res?.error == true) {
+                    console.log(`Login have some error .........`);
+                }
+                else {
+                    //do something with data from server
+                    const data = res.output.user;
+                    console.log(`Login data : ${JSON.stringify(data)}`);
+                    // build data for user here
+                    // login lobby with token.
+                    const tokenId = data.pendingTokenId || '';
+                    playerData.instance.updatePlayerInfo("username", this.email);
+                    playerData.instance.updatePlayerInfo("password", this.password);
+                    playerData.instance.tokenId = tokenId;
+                    StorageManager.instance.save();
+    
+                    cv.networkManager?.connect(tokenId);
+                    self.ProcessLogin();
+                }
+            });
+        }
+        
         
     }
 
     onBtnSignupByUserName() {
         console.log(`********** Signup by user/ email/ pass : ${this.username} / ${this.email} / ${this.password}`);
         const self = this;
-        cv.httpHandler?.userSignUp(this.username, this.email, this.password, (res: RequestResponse) => {
-            if (res?.error == true) {
-                console.log(`Login have some error .........`);
-            }
-            else {
-                //do something with data from server
-                const data = res.output.user;
-                console.log(`Login data : ${JSON.stringify(data)}`);
-                // build data for user here
-                // login lobby with token.
-                const tokenId = data.pendingTokenId || '';
-                playerData.instance.tokenId = tokenId;
-                playerData.instance.createPlayerInfo({"username": this.email, "password": this.password});
-                cv.networkManager?.connect(tokenId);
-                StorageManager.instance.save();
-                self.ProcessLogin();
-            }
-        });
-        
+
+        if (GameConfig.USE_SUPABASE) {
+            cv.supabase?.signUpByEmail(this.email, this.password, (data: any, error: any) =>{
+                console.log(`SignUp SUPABASE ---
+                    data: ${data}
+                    error: ${error}
+                `)
+            });
+        }
+        else {
+            cv.httpHandler?.userSignUp(this.username, this.email, this.password, (res: RequestResponse) => {
+                if (res?.error == true) {
+                    console.log(`Login have some error .........`);
+                }
+                else {
+                    //do something with data from server
+                    const data = res.output.user;
+                    console.log(`Login data : ${JSON.stringify(data)}`);
+                    // build data for user here
+                    // login lobby with token.
+                    const tokenId = data.pendingTokenId || '';
+                    playerData.instance.tokenId = tokenId;
+                    playerData.instance.createPlayerInfo({"username": this.email, "password": this.password});
+                    cv.networkManager?.connect(tokenId);
+                    StorageManager.instance.save();
+                    self.ProcessLogin();
+                }
+            });
+        }
     }
 
     async ProcessLogin() {

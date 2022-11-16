@@ -2,6 +2,7 @@ import { GameConfig } from "../../../casino/scripts/config/GameConfig";
 import { HTTP } from "./net/HTTP";
 import { HttpHandler } from "./net/HttpHandler";
 import { NetworkManager } from "./net/NetworkManager";
+import SupabaseManager from "./net/supabase/SupabaseManager";
 
 class cv {
     private static _instance: cv;
@@ -17,11 +18,13 @@ class cv {
     public httpHandler: HttpHandler | undefined;
     public networkManager: NetworkManager | undefined;
     public gameConfig: GameConfig | undefined;
+    public supabase: SupabaseManager | undefined;
 
     public initBaseClass() {
         this.gameConfig = GameConfig.instance;
         this.http = HTTP.getInstance();
         this.httpHandler = HttpHandler.getInstance();
+        this.supabase = SupabaseManager.getInstance();
         this.networkManager = NetworkManager.getInstance();
     }
 

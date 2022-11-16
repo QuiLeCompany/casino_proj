@@ -5,5 +5,8 @@
   "name": "casino-game",
   "type": "2d",
   "uuid": "345b8ab5-10c9-4b7c-ae54-9c640617e024",
-  "version": "3.6.0"
+  "version": "3.6.0",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.1.0"
+  }
 }
