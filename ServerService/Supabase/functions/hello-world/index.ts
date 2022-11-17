@@ -2,20 +2,27 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-import { serve } from "https://deno.land/std@0.131.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.131.0/http/server.ts";
+import { supabaseAdmin } from '../_shared/supabaseAdmin.ts';
 
 console.log("Hello from Functions!")
 
 serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
-  }
+  const { userId } = await req.json();
+  const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId);
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
+  if (error == null) {
+    return new Response(
+      JSON.stringify(data),
+      { headers: { "Content-Type": "application/json" } },
+    )
+  }
+  else {
+    return new Response(JSON.stringify({ error: error }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 400,
+    })
+  }
 })
 
 // To invoke:

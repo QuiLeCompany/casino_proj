@@ -1,2 +1,2 @@
 # Test Hello World
-  curl -L -X POST 'https://popahsqojmkutrjajtsj.functions.supabase.co/hello-world' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcGFoc3Fvam1rdXRyamFqdHNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjgwNTA3MDAsImV4cCI6MTk4MzYyNjcwMH0._8_ECa6FyhzrYhuFlTcn2AO2g8otn3CflEv_RcAhdzQ' --data '{"name":"Functions"}'
+  curl -L -X POST 'https://popahsqojmkutrjajtsj.functions.supabase.co/hello-world' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcGFoc3Fvam1rdXRyamFqdHNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjgwNTA3MDAsImV4cCI6MTk4MzYyNjcwMH0._8_ECa6FyhzrYhuFlTcn2AO2g8otn3CflEv_RcAhdzQ' --data '{"userId":"be115789-6e8d-4f63-b2e3-ad58dc8c7a0a"}'

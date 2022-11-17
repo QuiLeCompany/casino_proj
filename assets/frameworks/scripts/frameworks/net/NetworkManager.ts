@@ -15,7 +15,7 @@ export class NetworkManager {
 
     public init() {
         console.log(`************ on Load Lobby`);
-        this.client = new Colyseus.Client("ws://localhost:2567");
+        this.client = new Colyseus.Client("wss://mzhgtr.colyseus.dev:443"); //("ws://localhost:2567");
     }
 
     async connect(userId: string) {
