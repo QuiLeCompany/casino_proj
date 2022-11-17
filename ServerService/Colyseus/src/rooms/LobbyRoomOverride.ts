@@ -2,23 +2,10 @@ import { ServerError, Client } from 'colyseus';
 import logger from '../helpers/logger';
 import { LobbyRoom } from "colyseus";
 import { LobbyOptions } from 'colyseus/lib/rooms/LobbyRoom';
-/**
- * When debug use import ...
- * When build release have to use require to use commonJs module
- */
-// import { createClient, SupabaseClient } from '@supabase/supabase-js';
-const { createClient } = require('@supabase/supabase-js');
+import { supabaseAdmin } from '../_shared/supabaseAdmin';
 
 export class LobbyRoomOverride extends LobbyRoom {
-
-    readonly SUPABASE_URL = process.env.SUPABASE_URL;
-    readonly SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
-    private supabaseClient: any = null;
-    // private supabaseClient: SupabaseClient = null;
-
     async onCreate(options: any): Promise<void> {
-        this.supabaseClient = createClient(this.SUPABASE_URL, this.SUPABASE_SERVICE_KEY);
         await super.onCreate(options);
     }
 
@@ -26,7 +13,7 @@ export class LobbyRoomOverride extends LobbyRoom {
     async onAuth(client: Client, options: any, request: any) {
         logger.info(`*********************** LOBBY AUTH ${client.sessionId} option: ${JSON.stringify(options)}*********************** `);
         const userId = !!(options?.userId) ? options.userId : "";
-        const { data, error } = await this.supabaseClient.auth.admin.getUserById(userId);
+        const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId);
         if (error == null) {
             console.log(`ok data: ${JSON.stringify(data)}`);
             return data;
@@ -44,7 +31,6 @@ export class LobbyRoomOverride extends LobbyRoom {
     async onLeave(client: Client) {
         console.log(`onLeave ....`);
         super.onLeave(client);
-        this.supabaseClient = null;
     }
 
     onDispose(): void {
