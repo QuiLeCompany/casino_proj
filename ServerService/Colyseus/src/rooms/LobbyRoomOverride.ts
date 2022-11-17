@@ -2,14 +2,20 @@ import { ServerError, Client } from 'colyseus';
 import logger from '../helpers/logger';
 import { LobbyRoom } from "colyseus";
 import { LobbyOptions } from 'colyseus/lib/rooms/LobbyRoom';
-const { SupabaseClient, createClient } = require('@supabase/supabase-js');
+/**
+ * When debug use import ...
+ * When build release have to use require to use commonJs module
+ */
+// import { createClient, SupabaseClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 export class LobbyRoomOverride extends LobbyRoom {
 
     readonly SUPABASE_URL = process.env.SUPABASE_URL;
     readonly SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-    private supabaseClient: any;
+    private supabaseClient: any = null;
+    // private supabaseClient: SupabaseClient = null;
 
     async onCreate(options: any): Promise<void> {
         this.supabaseClient = createClient(this.SUPABASE_URL, this.SUPABASE_SERVICE_KEY);
