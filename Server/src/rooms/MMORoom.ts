@@ -405,7 +405,7 @@ export class MMORoom extends Room<RoomState> {
     let user: User = await userRepo.findOne({ activeTokenId: client.sessionId });
     if (user) {
       let avatarState = this.state.getUserAvatarState(client.sessionId);
-      user.avatar = avatarState;
+      //user.avatar = avatarState;
       await userRepo.flush();
     }
   }
