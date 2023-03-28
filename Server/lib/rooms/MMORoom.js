@@ -35,7 +35,6 @@ const database_config_1 = require("../config/database.config");
 const matchmakerHelper = __importStar(require("../helpers/matchmakerHelper"));
 const interactableObjectFactory = __importStar(require("../helpers/interactableObjectFactory"));
 const UserEntity_1 = require("../entities/UserEntity");
-const Position_1 = require("./schema/Position");
 const AvatarState_1 = require("./schema/AvatarState");
 const Vectors_1 = require("../helpers/Vectors");
 const logger = require("../helpers/logger");
@@ -71,12 +70,12 @@ class MMORoom extends colyseus_1.Room {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepo = database_config_1.DI.em.fork().getRepository(UserEntity_1.User);
             // Check for a user with a pending sessionId that matches this client's sessionId
-            let user = yield userRepo.findOne({ pendingSessionId: client.sessionId });
+            let user = yield userRepo.findOne({ pendingTokenId: client.sessionId });
             if (user) {
                 // A user with the pendingSessionId does exist
                 // Update user; clear their pending session Id and update their active session Id
-                user.activeSessionId = client.sessionId;
-                user.pendingSessionId = "";
+                user.activeTokenId = client.sessionId;
+                user.pendingTokenId = "";
                 // Save the user changes to the database
                 yield userRepo.flush();
                 // Returning the user object equates to returning a "truthy" value that allows the onJoin function to continue
@@ -134,12 +133,12 @@ class MMORoom extends colyseus_1.Room {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepo = database_config_1.DI.em.fork().getRepository(UserEntity_1.User);
             // Find the user object in the database by their activeSessionId
-            let user = yield userRepo.findOne({ activeSessionId: client.sessionId });
+            let user = yield userRepo.findOne({ activeTokenId: client.sessionId });
             if (user) {
                 // Clear the user's active session
-                user.activeSessionId = "";
-                user.position = this.state.getUserPosition(client.sessionId);
-                user.rotation = this.state.getUserRotation(client.sessionId);
+                user.activeTokenId = "";
+                // user.position = this.state.getUserPosition(client.sessionId);
+                // user.rotation = this.state.getUserRotation(client.sessionId);
                 // Save the user's changes to the database
                 yield userRepo.flush();
             }
@@ -210,13 +209,14 @@ class MMORoom extends colyseus_1.Room {
                 return;
             }
             // Get the user object by the active session Id
-            let user = yield userRepo.findOne({ activeSessionId: client.sessionId });
+            let user = yield userRepo.findOne({ activeTokenId: client.sessionId });
             if (user == null) {
                 logger.error(`*** On Grid Update - Error finding player! - ${client.sessionId} ***`);
                 return;
             }
             // Calculate the new grid
-            let progress = user ? user.progress : "0,0" || "0,0";
+            // let progress = user ? user.progress : "0,0" || "0,0";
+            let progress = "0,0";
             const currentGrid = progress.split(",");
             const currentX = Number(currentGrid[0]);
             const currentY = Number(currentGrid[1]);
@@ -233,11 +233,11 @@ class MMORoom extends colyseus_1.Room {
                 return;
             }
             // Update the user to reflect the grid change
-            user.progress = newGridString;
-            user.prevGrid = progress;
-            user.pendingSessionId = seatReservation.sessionId;
-            user.position = new Position_1.Position().assign(position);
-            user.rotation = this.state.getUserRotation(client.sessionId);
+            // user.progress = newGridString;
+            // user.prevGrid = progress;
+            user.pendingTokenId = seatReservation.sessionId;
+            // user.position = new Position().assign(position);
+            // user.rotation = this.state.getUserRotation(client.sessionId);
             user.updatedAt = new Date();
             // Save the user's changes to the database
             yield userRepo.flush();
@@ -296,7 +296,7 @@ class MMORoom extends colyseus_1.Room {
                         interactableObject.inUse = true;
                         interactableObject.availableTimestamp = this.state.serverTime + interactableObject.useDuration;
                         this.broadcast("objectUsed", { interactedObjectID: interactableObject.id, interactingStateID: interactingState.id });
-                        let userObj = yield userRepo.findOne({ activeSessionId: client.sessionId });
+                        let userObj = yield userRepo.findOne({ activeTokenId: client.sessionId });
                         if (userObj) {
                             userObj.coins = interactingState.coins;
                             yield userRepo.flush();
@@ -351,7 +351,7 @@ class MMORoom extends colyseus_1.Room {
     saveAvatarUpdate(client) {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepo = database_config_1.DI.em.fork().getRepository(UserEntity_1.User);
-            let user = yield userRepo.findOne({ activeSessionId: client.sessionId });
+            let user = yield userRepo.findOne({ activeTokenId: client.sessionId });
             if (user) {
                 let avatarState = this.state.getUserAvatarState(client.sessionId);
                 user.avatar = avatarState;

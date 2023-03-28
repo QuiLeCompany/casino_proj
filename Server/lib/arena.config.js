@@ -22,19 +22,18 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 /**
  * Import your Room files
  */
-const MMORoom_1 = require("./rooms/MMORoom");
-const ChatRoom_1 = require("./rooms/ChatRoom");
 const tictactoe_1 = require("./rooms/tictactoe");
 const cors_1 = __importDefault(require("cors"));
+const LobbyRoomOverride_1 = require("./rooms/LobbyRoomOverride");
 exports.default = arena_1.default({
     getId: () => "8adedd4622e4f7d0f2e47172a62d129d",
     initializeGameServer: (gameServer) => {
         /**
          * Define your room handlers:
          */
-        gameServer.define('tictactoe', tictactoe_1.TicTacToe);
-        gameServer.define('chat_room', ChatRoom_1.ChatRoom).filterBy(["roomID"]);
-        gameServer.define('lobby_room', MMORoom_1.MMORoom).filterBy(["progress"]); // Filter room by "progress" (which grid we're wanting to join EX: -1x2)
+        // Expose the "lobby" room.
+        gameServer.define("lobby", LobbyRoomOverride_1.LobbyRoomOverride);
+        gameServer.define('tictactoe', tictactoe_1.TicTacToe).enableRealtimeListing();
     },
     initializeExpress: (app) => {
         /**

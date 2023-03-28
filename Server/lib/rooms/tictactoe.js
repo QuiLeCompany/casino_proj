@@ -8,6 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,6 +25,8 @@ exports.TicTacToe = void 0;
 const colyseus_1 = require("colyseus");
 const schema_1 = require("@colyseus/schema");
 const logger_1 = __importDefault(require("../helpers/logger"));
+const database_config_1 = require("../config/database.config");
+const UserEntity_1 = require("../entities/UserEntity");
 const TURN_TIMEOUT = 10;
 const BOARD_WIDTH = 3;
 class State extends schema_1.Schema {
@@ -54,9 +65,32 @@ class TicTacToe extends colyseus_1.Room {
         this.setState(new State());
         this.onMessage("action", (client, message) => this.playerAction(client, message));
         console.log("Room Created!");
+        this.clock.setTimeout(() => {
+            this.setMetadata({
+                customData: "Hello world!"
+            }).then(() => colyseus_1.updateLobby(this));
+        }, 5000);
     }
-    onJoin(client) {
-        logger_1.default.silly(`*** On Join Tic Tac Toe - ${client.sessionId} ***`);
+    /** onAuth is called before onJoin */
+    onAuth(client, options, request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} option: ${JSON.stringify(options)}*********************** `);
+            const tokenId = !!(options === null || options === void 0 ? void 0 : options.tokenId) ? options.tokenId : "";
+            const userRepo = database_config_1.DI.em.fork().getRepository(UserEntity_1.User);
+            // Check for a user with a pending sessionId that matches this client's sessionId
+            let user = yield userRepo.findOne({ activeTokenId: tokenId });
+            if (user) {
+                return user;
+            }
+            else {
+                // No user object was found with the pendingSessionId like we expected
+                logger_1.default.error(`On Auth - No user found for session Id - ${client.sessionId}`);
+                throw new colyseus_1.ServerError(400, "Bad session!");
+            }
+        });
+    }
+    onJoin(client, options) {
+        logger_1.default.silly(`*** On Join Tic Tac Toe - ${client.sessionId} option : ${JSON.stringify(options)}***`);
         logger_1.default.info(`*********************** TIC TAC TOE CLIENT JOIN ${client.sessionId} *********************** `);
         this.state.players.set(client.sessionId, true);
         if (this.state.players.size === 2) {
@@ -163,14 +197,16 @@ class TicTacToe extends colyseus_1.Room {
         return won;
     }
     onLeave(client) {
-        this.state.players.delete(client.sessionId);
-        if (this.randomMoveTimeout) {
-            this.randomMoveTimeout.clear();
-        }
-        let remainingPlayerIds = Array.from(this.state.players.keys());
-        if (remainingPlayerIds.length > 0) {
-            this.state.winner = remainingPlayerIds[0];
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            this.state.players.delete(client.sessionId);
+            if (this.randomMoveTimeout) {
+                this.randomMoveTimeout.clear();
+            }
+            let remainingPlayerIds = Array.from(this.state.players.keys());
+            if (remainingPlayerIds.length > 0) {
+                this.state.winner = remainingPlayerIds[0];
+            }
+        });
     }
 }
 exports.TicTacToe = TicTacToe;
