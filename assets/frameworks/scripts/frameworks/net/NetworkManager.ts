@@ -1,4 +1,5 @@
 import Colyseus, { RoomAvailable } from 'db://colyseus-sdk/colyseus.js';
+import { NetworkConfig } from '../../shared/NetworkConfig';
 
 export class NetworkManager {
     private static _instance: NetworkManager = null!;
@@ -15,7 +16,7 @@ export class NetworkManager {
 
     public init() {
         console.log(`************ on Load Lobby`);
-        this.client = new Colyseus.Client("ws://localhost:2567");
+        this.client = new Colyseus.Client(NetworkConfig.socket);
     }
 
     async connect(tokenId: string) {

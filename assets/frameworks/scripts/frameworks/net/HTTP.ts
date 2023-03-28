@@ -19,7 +19,7 @@ export class HTTP {
 			onComplete(reqResponse);
 		};
 
-		const fullUrl = `${NetworkConfig.WebRequestEndPoint}/${endPoint}`;
+		const fullUrl = `${NetworkConfig.apiUrl}/${endPoint}`;
         console.log(`******[ServerRequest url] ${fullUrl}`);
 		xhr.open(method, fullUrl);
 		xhr.responseType = 'json';

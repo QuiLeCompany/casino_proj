@@ -5,17 +5,11 @@ import Colyseus, { Room } from 'db://colyseus-sdk/colyseus.js';
 import { RequestResponse } from '../../../../frameworks/scripts/frameworks/models/RequestResponse';
 import cv from '../../../../frameworks/scripts/frameworks/cv';
 import { playerData } from '../../../../frameworks/scripts/frameworks/playerData';
+import { NetworkConfig } from '../../../../frameworks/scripts/shared/NetworkConfig';
 
 const { ccclass, property } = _decorator;
 @ccclass('SceneManager')
 export class SceneManager extends Component {
-  
-    //Server connection settings
-    @property
-    private serverURL : string = "localhost";
-    @property
-    private port : string = "2567";
-
     //UI Nodes
     @property({type:Node})
     private menuNode : Node | null = null;
@@ -43,8 +37,7 @@ export class SceneManager extends Component {
     private countdownInterval : any;
 
     onLoad(){
-        let endpoint : string = `ws://${this.serverURL}:${this.port}`;//xgmd-a.colyseus.de:80, localhost:2567
-        this.client = new Colyseus.Client(endpoint);
+        this.client = new Colyseus.Client(NetworkConfig.socket);
         this.resetGame();
     }
 
