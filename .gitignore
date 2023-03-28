@@ -22,3 +22,5 @@ node_modules/
 # WebStorm
 #//////////////////////////
 .idea/
+yarn.lock
+package-lock.json
